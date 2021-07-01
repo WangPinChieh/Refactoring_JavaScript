@@ -1,5 +1,12 @@
 plays = {};
 invoice = {};
+
+function volumeCreditsFor(perf) {
+    let temp = Math.max(perf.audience - 30, 0);
+    if ("comedy" === playFor(perf).type) temp += Math.floor(perf.audience / 5);
+    return temp;
+}
+
 function statement(invoice, plays) {
     this.plays = plays;
     this.invoice = invoice;
@@ -13,9 +20,7 @@ function statement(invoice, plays) {
         }).format;
 
     for (let perf of this.invoice.performances) {
-
-        volumeCredits += Math.max(perf.audience - 30, 0);
-        if ("comedy" === playFor(perf).type) volumeCredits += Math.floor(perf.audience / 5);
+        volumeCredits += volumeCreditsFor(perf);
 
         result += `  ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
