@@ -15,18 +15,24 @@ function format(number) {
         }).format(number);
 }
 
+function totalVolumeCredits() {
+    let volumeCredits = 0;
+    for (let perf of this.invoice.performances) {
+        volumeCredits += volumeCreditsFor(perf);
+    }
+    return volumeCredits;
+}
+
 function statement(invoice, plays) {
     this.plays = plays;
     this.invoice = invoice;
     let totalAmount = 0;
-    let volumeCredits = 0;
     let result = `Statement for ${this.invoice.customer}\n`;
     for (let perf of this.invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf);
-
         result += `  ${playFor(perf).name}: ${(format(amountFor(perf) / 100))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
     }
+    let volumeCredits = totalVolumeCredits();
     result += `Amount owed is ${(format(totalAmount / 100))}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
