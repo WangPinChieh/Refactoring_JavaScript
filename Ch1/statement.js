@@ -2,9 +2,9 @@ plays = {};
 invoice = {};
 
 function volumeCreditsFor(perf) {
-    let temp = Math.max(perf.audience - 30, 0);
-    if ("comedy" === playFor(perf).type) temp += Math.floor(perf.audience / 5);
-    return temp;
+    let result = Math.max(perf.audience - 30, 0);
+    if ("comedy" === playFor(perf).type) result += Math.floor(perf.audience / 5);
+    return result;
 }
 
 function statement(invoice, plays) {
