@@ -23,16 +23,22 @@ function totalVolumeCredits() {
     return volumeCredits;
 }
 
+function totalAmount() {
+    let totalAmount = 0;
+    for (let perf of this.invoice.performances) {
+        totalAmount += amountFor(perf);
+    }
+    return totalAmount;
+}
+
 function statement(invoice, plays) {
     this.plays = plays;
     this.invoice = invoice;
-    let totalAmount = 0;
     let result = `Statement for ${this.invoice.customer}\n`;
     for (let perf of this.invoice.performances) {
         result += `  ${playFor(perf).name}: ${(format(amountFor(perf) / 100))} (${perf.audience} seats)\n`;
-        totalAmount += amountFor(perf);
     }
-    result += `Amount owed is ${(format(totalAmount / 100))}\n`;
+    result += `Amount owed is ${(format(totalAmount() / 100))}\n`;
     result += `You earned ${(totalVolumeCredits())} credits\n`;
     return result;
 
