@@ -32,9 +32,8 @@ function statement(invoice, plays) {
         result += `  ${playFor(perf).name}: ${(format(amountFor(perf) / 100))} (${perf.audience} seats)\n`;
         totalAmount += amountFor(perf);
     }
-    let volumeCredits = totalVolumeCredits();
     result += `Amount owed is ${(format(totalAmount / 100))}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
+    result += `You earned ${(totalVolumeCredits())} credits\n`;
     return result;
 
 
