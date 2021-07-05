@@ -1,6 +1,6 @@
-function renderPlainText(invoice, plays) {
-    let result = `Statement for ${invoice.customer}\n`;
-    for (let perf of invoice.performances) {
+function renderPlainText(data, plays) {
+    let result = `Statement for ${data.customer}\n`;
+    for (let perf of data.performances) {
         result += `  ${playFor(perf).name}: ${(format(amountFor(perf) / 100))} (${perf.audience} seats)\n`;
     }
     result += `Amount owed is ${(format(totalAmount() / 100))}\n`;
@@ -24,7 +24,7 @@ function renderPlainText(invoice, plays) {
 
     function totalVolumeCredits() {
         let result = 0;
-        for (let perf of invoice.performances) {
+        for (let perf of data.performances) {
             result += volumeCreditsFor(perf);
         }
         return result;
@@ -32,7 +32,7 @@ function renderPlainText(invoice, plays) {
 
     function totalAmount() {
         let result = 0;
-        for (let perf of invoice.performances) {
+        for (let perf of data.performances) {
             result += amountFor(perf);
         }
         return result;
