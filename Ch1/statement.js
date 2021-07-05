@@ -66,7 +66,7 @@ function renderPlainText(invoice, plays) {
 }
 
 function statement(invoice, plays) {
-    let statementData = {};
+    const statementData = {};
     statementData.customer = invoice.customer;
     statementData.performances = invoice.performances;
     return renderPlainText(statementData, plays)
