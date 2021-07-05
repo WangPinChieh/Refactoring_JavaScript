@@ -1,7 +1,7 @@
 function renderPlainText(data, plays) {
     let result = `Statement for ${data.customer}\n`;
     for (let perf of data.performances) {
-        result += `  ${playFor(perf).name}: ${(format(amountFor(perf) / 100))} (${perf.audience} seats)\n`;
+        result += `  ${perf.play.name}: ${(format(amountFor(perf) / 100))} (${perf.audience} seats)\n`;
     }
     result += `Amount owed is ${(format(totalAmount() / 100))}\n`;
     result += `You earned ${(totalVolumeCredits())} credits\n`;
@@ -10,7 +10,7 @@ function renderPlainText(data, plays) {
 
     function volumeCreditsFor(perf) {
         let result = Math.max(perf.audience - 30, 0);
-        if ("comedy" === playFor(perf).type) result += Math.floor(perf.audience / 5);
+        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
         return result;
     }
 
@@ -68,8 +68,17 @@ function renderPlainText(data, plays) {
 function statement(invoice, plays) {
     const statementData = {};
     statementData.customer = invoice.customer;
-    statementData.performances = invoice.performances;
+    statementData.performances = invoice.performances.map(enrichPerformance);
     return renderPlainText(statementData, plays)
+
+    function enrichPerformance(performance) {
+        const result = Object.assign({}, performance);
+        result.play = playFor(result)
+        return result;
+    }
+    function playFor(perf) {
+        return plays[perf.playID];
+    }
 }
 
 
