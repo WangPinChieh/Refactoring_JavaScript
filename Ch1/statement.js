@@ -1,7 +1,7 @@
-function renderPlainText(data, plays) {
+function renderPlainText(data) {
     let result = `Statement for ${data.customer}\n`;
     for (let perf of data.performances) {
-        result += `  ${perf.play.name}: ${(format(amountFor(perf) / 100))} (${perf.audience} seats)\n`;
+        result += `  ${perf.play.name}: ${(format(perf.amount / 100))} (${perf.audience} seats)\n`;
     }
     result += `Amount owed is ${(format(totalAmount() / 100))}\n`;
     result += `You earned ${(totalVolumeCredits())} credits\n`;
@@ -33,15 +33,24 @@ function renderPlainText(data, plays) {
     function totalAmount() {
         let result = 0;
         for (let perf of data.performances) {
-            result += amountFor(perf);
+            result += perf.amount;
         }
         return result;
     }
+}
 
-    function playFor(perf) {
-        return plays[perf.playID];
+function statement(invoice, plays) {
+    const statementData = {};
+    statementData.customer = invoice.customer;
+    statementData.performances = invoice.performances.map(enrichPerformance);
+    return renderPlainText(statementData)
+
+    function enrichPerformance(performance) {
+        const result = Object.assign({}, performance);
+        result.play = playFor(result)
+        result.amount = amountFor(result);
+        return result;
     }
-
     function amountFor(aPerformance) {
         let result = 0;
         switch (playFor(aPerformance).type) {
@@ -63,19 +72,8 @@ function renderPlainText(data, plays) {
         }
         return result;
     }
-}
 
-function statement(invoice, plays) {
-    const statementData = {};
-    statementData.customer = invoice.customer;
-    statementData.performances = invoice.performances.map(enrichPerformance);
-    return renderPlainText(statementData, plays)
 
-    function enrichPerformance(performance) {
-        const result = Object.assign({}, performance);
-        result.play = playFor(result)
-        return result;
-    }
     function playFor(perf) {
         return plays[perf.playID];
     }
