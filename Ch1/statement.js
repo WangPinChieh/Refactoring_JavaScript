@@ -35,11 +35,7 @@ function statement(invoice, plays) {
     }
 
     function totalVolumeCredits(data) {
-        let result = 0;
-        for (let perf of data.performances) {
-            result += perf.volumeCredits;
-        }
-        return result;
+        return data.performances.reduce((accumulator, aPerformance) => accumulator + aPerformance.volumeCredits, 0);
     }
 
     function totalAmount(data) {
