@@ -19,8 +19,7 @@ function renderPlainText(data) {
     function totalVolumeCredits() {
         let result = 0;
         for (let perf of data.performances) {
-            let volumeCredit = perf.volumeCredit;
-            result += volumeCredit;
+            result += perf.volumeCredits;
         }
         return result;
     }
@@ -44,7 +43,7 @@ function statement(invoice, plays) {
         const result = Object.assign({}, performance);
         result.play = playFor(result)
         result.amount = amountFor(result);
-        result.volumeCredit = volumeCreditsFor(result);
+        result.volumeCredits = volumeCreditsFor(result);
         return result;
     }
 
