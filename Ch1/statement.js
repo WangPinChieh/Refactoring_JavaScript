@@ -8,16 +8,13 @@ function renderPlainText(data) {
     result += `Amount owed is ${(format(data.totalAmount / 100))}\n`;
     result += `You earned ${(data.totalVolumeCredits)} credits\n`;
     return result;
-
-
-    function format(number) {
-        return new Intl.NumberFormat("en-US",
-            {
-                style: "currency", currency: "USD",
-                minimumFractionDigits: 2
-            }).format(number);
-    }
-
+}
+function format(number) {
+    return new Intl.NumberFormat("en-US",
+        {
+            style: "currency", currency: "USD",
+            minimumFractionDigits: 2
+        }).format(number);
 }
 
 function statement(invoice, plays) {
