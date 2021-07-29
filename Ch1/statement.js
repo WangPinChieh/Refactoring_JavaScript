@@ -1,7 +1,7 @@
 function renderPlainText(statement, plays) {
     let result = `Statement for ${statement.customer}\n`;
     for (let perf of statement.performances) {
-        result += `  ${playFor(perf).name}: ${usdFormat(amountFor(perf))} (${perf.audience} seats)\n`;
+        result += `  ${(perf.play.name)}: ${usdFormat(amountFor(perf))} (${perf.audience} seats)\n`;
     }
     result += `Amount owed is ${(usdFormat(getTotalAmount()))}\n`;
     result += `You earned ${(getTotalVolumeCredits())} credits\n`;
@@ -13,10 +13,6 @@ function renderPlainText(statement, plays) {
                 style: "currency", currency: "USD",
                 minimumFractionDigits: 2
             }).format(number / 100);
-    }
-
-    function playFor(perf) {
-        return plays[perf.playID];
     }
 
     function getTotalAmount() {
@@ -38,7 +34,7 @@ function renderPlainText(statement, plays) {
 
     function amountFor(perf) {
         let result = 0;
-        switch (playFor(perf).type) {
+        switch (perf.play.type) {
             case "tragedy":
                 result = 40000;
                 if (perf.audience > 30) {
@@ -53,14 +49,14 @@ function renderPlainText(statement, plays) {
                 result += 300 * perf.audience;
                 break;
             default:
-                throw new Error(`unknown type: ${playFor(perf).type}`);
+                throw new Error(`unknown type: ${perf.play.type}`);
         }
         return result;
     }
 
     function volumeCreditsFor(perf) {
         let result = Math.max(perf.audience - 30, 0);
-        if ("comedy" === playFor(perf).type) result += Math.floor(perf.audience / 5);
+        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
         return result;
     }
 }
@@ -68,8 +64,16 @@ function renderPlainText(statement, plays) {
 function createStatementData(invoice, plays) {
     let result = {};
     result.customer = invoice.customer;
-    result.performances = invoice.performances;
+    result.performances = invoice.performances.map((aPerformance) => {
+        const result = Object.assign({}, aPerformance);
+        result.play = playFor(aPerformance);
+        return result;
+    });
     return result;
+
+    function playFor(perf) {
+        return plays[perf.playID];
+    }
 }
 
 function statement(invoice, plays) {
