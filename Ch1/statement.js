@@ -1,6 +1,4 @@
 function statement(invoice, plays) {
-    let totalAmount = 0;
-    let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
     const format = new Intl.NumberFormat("en-US",
         {
@@ -8,23 +6,34 @@ function statement(invoice, plays) {
             minimumFractionDigits: 2
         }).format;
 
-    function playFor(perf) {
-        return plays[perf.playID];
-    }
-
-    for (let perf of invoice.performances) {
-        totalAmount += amountFor(perf);
-    }
-    for (let perf of invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf);
-    }
     for (let perf of invoice.performances) {
         result += `  ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
     }
 
-    result += `Amount owed is ${format(totalAmount / 100)}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
+    result += `Amount owed is ${format(getTotalAmount() / 100)}\n`;
+    result += `You earned ${(getTotalVolumeCredits())} credits\n`;
     return result;
+
+    function playFor(perf) {
+        return plays[perf.playID];
+    }
+
+    function getTotalAmount() {
+        let totalAmount = 0;
+        for (let perf of invoice.performances) {
+            totalAmount += amountFor(perf);
+        }
+        return totalAmount;
+    }
+
+    function getTotalVolumeCredits() {
+        let volumeCredits = 0;
+        for (let perf of invoice.performances) {
+            volumeCredits += volumeCreditsFor(perf);
+        }
+        return volumeCredits;
+    }
+
 
     function amountFor(perf) {
         let result = 0;
