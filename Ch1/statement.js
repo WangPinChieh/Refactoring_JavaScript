@@ -3,6 +3,9 @@ function statement(invoice, plays) {
     for (let perf of invoice.performances) {
         result += `  ${playFor(perf).name}: ${usdFormat(amountFor(perf))} (${perf.audience} seats)\n`;
     }
+    result += `Amount owed is ${(usdFormat(getTotalAmount()))}\n`;
+    result += `You earned ${(getTotalVolumeCredits())} credits\n`;
+    return result;
 
     function usdFormat(number) {
         return new Intl.NumberFormat("en-US",
@@ -11,10 +14,6 @@ function statement(invoice, plays) {
                 minimumFractionDigits: 2
             }).format(number / 100);
     }
-
-    result += `Amount owed is ${(usdFormat(getTotalAmount()))}\n`;
-    result += `You earned ${(getTotalVolumeCredits())} credits\n`;
-    return result;
 
     function playFor(perf) {
         return plays[perf.playID];
