@@ -65,8 +65,16 @@ function renderPlainText(invoice, plays) {
     }
 }
 
+function createStatementData(invoice, plays) {
+    let result = {};
+    result.customer = invoice.customer;
+    result.performances = invoice.performances;
+    return result;
+}
+
 function statement(invoice, plays) {
-    return renderPlainText(invoice, plays);
+    const statementData = createStatementData(invoice, plays);
+    return renderPlainText(statementData, plays);
 
 }
 
