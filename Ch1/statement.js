@@ -4,7 +4,7 @@ function renderPlainText(statement, plays) {
         result += `  ${(perf.play.name)}: ${usdFormat(perf.amount)} (${perf.audience} seats)\n`;
     }
     result += `Amount owed is ${(usdFormat(statement.totalAmount))}\n`;
-    result += `You earned ${(getTotalVolumeCredits())} credits\n`;
+    result += `You earned ${(statement.totalVolumeCredits)} credits\n`;
     return result;
 
     function usdFormat(number) {
@@ -13,21 +13,6 @@ function renderPlainText(statement, plays) {
                 style: "currency", currency: "USD",
                 minimumFractionDigits: 2
             }).format(number / 100);
-    }
-
-    function getTotalVolumeCredits() {
-        let volumeCredits = 0;
-        for (let perf of statement.performances) {
-            volumeCredits += volumeCreditsFor(perf);
-        }
-        return volumeCredits;
-    }
-
-
-    function volumeCreditsFor(perf) {
-        let result = Math.max(perf.audience - 30, 0);
-        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
-        return result;
     }
 }
 
@@ -38,9 +23,11 @@ function createStatementData(invoice, plays) {
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
         result.amount = amountFor(result);
+        result.volumeCredits = volumeCreditsFor(result);
         return result;
     });
     result.totalAmount = getTotalAmount(result);
+    result.totalVolumeCredits = getTotalVolumeCredits(result);
     return result;
 
     function playFor(perf) {
@@ -75,6 +62,20 @@ function createStatementData(invoice, plays) {
             totalAmount += perf.amount;
         }
         return totalAmount;
+    }
+
+    function volumeCreditsFor(perf) {
+        let result = Math.max(perf.audience - 30, 0);
+        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
+        return result;
+    }
+
+    function getTotalVolumeCredits(data) {
+        let volumeCredits = 0;
+        for (let perf of data.performances) {
+            volumeCredits += perf.volumeCredits;
+        }
+        return volumeCredits;
     }
 }
 
