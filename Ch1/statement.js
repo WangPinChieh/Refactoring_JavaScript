@@ -13,11 +13,15 @@ function statement(invoice, plays) {
     }
 
     for (let perf of invoice.performances) {
-        const play = playFor(perf);
         totalAmount += amountFor(perf);
-        volumeCredits += volumeCreditsFor(perf);
-        result += `  ${play.name}: ${format(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
     }
+    for (let perf of invoice.performances) {
+        volumeCredits += volumeCreditsFor(perf);
+    }
+    for (let perf of invoice.performances) {
+        result += `  ${playFor(perf).name}: ${format(amountFor(perf) / 100)} (${perf.audience} seats)\n`;
+    }
+
     result += `Amount owed is ${format(totalAmount / 100)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
