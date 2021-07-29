@@ -5,6 +5,7 @@ function usdFormat(number) {
             minimumFractionDigits: 2
         }).format(number / 100);
 }
+
 function renderPlainText(statement) {
     let result = `Statement for ${statement.customer}\n`;
     for (let perf of statement.performances) {
@@ -13,6 +14,21 @@ function renderPlainText(statement) {
     result += `Amount owed is ${(usdFormat(statement.totalAmount))}\n`;
     result += `You earned ${(statement.totalVolumeCredits)} credits\n`;
     return result;
+
+}
+
+class TragedyCalculator {
+    constructor(performance) {
+        this.performance = performance;
+    }
+
+    calculateTragedyAmount() {
+        let tempResult = 40000;
+        if (this.performance.audience > 30) {
+            tempResult += 1000 * (this.performance.audience - 30);
+        }
+        return tempResult;
+    }
 
 }
 
@@ -33,15 +49,11 @@ function createStatementData(invoice, plays) {
     function playFor(perf) {
         return plays[perf.playID];
     }
-
     function amountFor(perf) {
         let result = 0;
         switch (perf.play.type) {
             case "tragedy":
-                result = 40000;
-                if (perf.audience > 30) {
-                    result += 1000 * (perf.audience - 30);
-                }
+                result = new TragedyCalculator(perf).calculateTragedyAmount();
                 break;
             case "comedy":
                 result = 30000;
@@ -56,6 +68,12 @@ function createStatementData(invoice, plays) {
         return result;
     }
 
+    function volumeCreditsFor(perf) {
+        let result = Math.max(perf.audience - 30, 0);
+        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
+        return result;
+    }
+
     function getTotalAmount(data) {
         let totalAmount = 0;
         for (let perf of data.performances) {
@@ -64,11 +82,6 @@ function createStatementData(invoice, plays) {
         return totalAmount;
     }
 
-    function volumeCreditsFor(perf) {
-        let result = Math.max(perf.audience - 30, 0);
-        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
-        return result;
-    }
 
     function getTotalVolumeCredits(data) {
         let volumeCredits = 0;
