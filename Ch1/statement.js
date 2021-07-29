@@ -1,4 +1,4 @@
-function renderPlainText(statement, plays) {
+function renderPlainText(statement) {
     let result = `Statement for ${statement.customer}\n`;
     for (let perf of statement.performances) {
         result += `  ${(perf.play.name)}: ${usdFormat(perf.amount)} (${perf.audience} seats)\n`;
@@ -81,7 +81,7 @@ function createStatementData(invoice, plays) {
 
 function statement(invoice, plays) {
     const statementData = createStatementData(invoice, plays);
-    return renderPlainText(statementData, plays);
+    return renderPlainText(statementData);
 
 }
 
