@@ -1,7 +1,7 @@
 function renderPlainText(statement, plays) {
     let result = `Statement for ${statement.customer}\n`;
     for (let perf of statement.performances) {
-        result += `  ${(perf.play.name)}: ${usdFormat(amountFor(perf))} (${perf.audience} seats)\n`;
+        result += `  ${(perf.play.name)}: ${usdFormat(perf.amount)} (${perf.audience} seats)\n`;
     }
     result += `Amount owed is ${(usdFormat(getTotalAmount()))}\n`;
     result += `You earned ${(getTotalVolumeCredits())} credits\n`;
@@ -18,7 +18,7 @@ function renderPlainText(statement, plays) {
     function getTotalAmount() {
         let totalAmount = 0;
         for (let perf of statement.performances) {
-            totalAmount += amountFor(perf);
+            totalAmount += perf.amount;
         }
         return totalAmount;
     }
@@ -31,6 +31,28 @@ function renderPlainText(statement, plays) {
         return volumeCredits;
     }
 
+
+    function volumeCreditsFor(perf) {
+        let result = Math.max(perf.audience - 30, 0);
+        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
+        return result;
+    }
+}
+
+function createStatementData(invoice, plays) {
+    let result = {};
+    result.customer = invoice.customer;
+    result.performances = invoice.performances.map((aPerformance) => {
+        const result = Object.assign({}, aPerformance);
+        result.play = playFor(result);
+        result.amount = amountFor(result);
+        return result;
+    });
+    return result;
+
+    function playFor(perf) {
+        return plays[perf.playID];
+    }
 
     function amountFor(perf) {
         let result = 0;
@@ -52,27 +74,6 @@ function renderPlainText(statement, plays) {
                 throw new Error(`unknown type: ${perf.play.type}`);
         }
         return result;
-    }
-
-    function volumeCreditsFor(perf) {
-        let result = Math.max(perf.audience - 30, 0);
-        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
-        return result;
-    }
-}
-
-function createStatementData(invoice, plays) {
-    let result = {};
-    result.customer = invoice.customer;
-    result.performances = invoice.performances.map((aPerformance) => {
-        const result = Object.assign({}, aPerformance);
-        result.play = playFor(aPerformance);
-        return result;
-    });
-    return result;
-
-    function playFor(perf) {
-        return plays[perf.playID];
     }
 }
 
