@@ -1,4 +1,4 @@
-function statement(invoice, plays) {
+function renderPlainText(invoice, plays) {
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
         result += `  ${playFor(perf).name}: ${usdFormat(amountFor(perf))} (${perf.audience} seats)\n`;
@@ -63,6 +63,10 @@ function statement(invoice, plays) {
         if ("comedy" === playFor(perf).type) result += Math.floor(perf.audience / 5);
         return result;
     }
+}
+
+function statement(invoice, plays) {
+    return renderPlainText(invoice, plays);
 
 }
 
