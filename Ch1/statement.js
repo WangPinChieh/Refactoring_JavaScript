@@ -3,7 +3,7 @@ function renderPlainText(statement, plays) {
     for (let perf of statement.performances) {
         result += `  ${(perf.play.name)}: ${usdFormat(perf.amount)} (${perf.audience} seats)\n`;
     }
-    result += `Amount owed is ${(usdFormat(getTotalAmount()))}\n`;
+    result += `Amount owed is ${(usdFormat(statement.totalAmount))}\n`;
     result += `You earned ${(getTotalVolumeCredits())} credits\n`;
     return result;
 
@@ -13,14 +13,6 @@ function renderPlainText(statement, plays) {
                 style: "currency", currency: "USD",
                 minimumFractionDigits: 2
             }).format(number / 100);
-    }
-
-    function getTotalAmount() {
-        let totalAmount = 0;
-        for (let perf of statement.performances) {
-            totalAmount += perf.amount;
-        }
-        return totalAmount;
     }
 
     function getTotalVolumeCredits() {
@@ -48,6 +40,7 @@ function createStatementData(invoice, plays) {
         result.amount = amountFor(result);
         return result;
     });
+    result.totalAmount = getTotalAmount(result);
     return result;
 
     function playFor(perf) {
@@ -74,6 +67,14 @@ function createStatementData(invoice, plays) {
                 throw new Error(`unknown type: ${perf.play.type}`);
         }
         return result;
+    }
+
+    function getTotalAmount(data) {
+        let totalAmount = 0;
+        for (let perf of data.performances) {
+            totalAmount += perf.amount;
+        }
+        return totalAmount;
     }
 }
 
