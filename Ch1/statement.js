@@ -1,3 +1,10 @@
+function usdFormat(number) {
+    return new Intl.NumberFormat("en-US",
+        {
+            style: "currency", currency: "USD",
+            minimumFractionDigits: 2
+        }).format(number / 100);
+}
 function renderPlainText(statement) {
     let result = `Statement for ${statement.customer}\n`;
     for (let perf of statement.performances) {
@@ -7,13 +14,6 @@ function renderPlainText(statement) {
     result += `You earned ${(statement.totalVolumeCredits)} credits\n`;
     return result;
 
-    function usdFormat(number) {
-        return new Intl.NumberFormat("en-US",
-            {
-                style: "currency", currency: "USD",
-                minimumFractionDigits: 2
-            }).format(number / 100);
-    }
 }
 
 function createStatementData(invoice, plays) {
