@@ -57,13 +57,26 @@ class ComedyCalculator extends PerformanceCalculator {
     }
 }
 
+function createPerformanceCalculator(performance, play) {
+    switch (play.type) {
+        case "tragedy":
+            return new TragedyCalculator(performance);
+        case "comedy":
+            return new ComedyCalculator(performance);
+        default:
+            throw new Error(`unknown type: ${play.type}`);
+    }
+}
+
 function createStatementData(invoice, plays) {
     let result = {};
     result.customer = invoice.customer;
     result.performances = invoice.performances.map((aPerformance) => {
+        const performanceCalculator = createPerformanceCalculator(aPerformance, playFor(aPerformance));
+
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
-        result.amount = amountFor(result);
+        result.amount = performanceCalculator.amount;
         result.volumeCredits = volumeCreditsFor(result);
         return result;
     });
@@ -74,22 +87,6 @@ function createStatementData(invoice, plays) {
     function playFor(perf) {
         return plays[perf.playID];
     }
-
-    function amountFor(perf) {
-        let result = 0;
-        switch (perf.play.type) {
-            case "tragedy":
-                result = new TragedyCalculator(perf).amount
-                break;
-            case "comedy":
-                result = new ComedyCalculator(perf).amount
-                break;
-            default:
-                throw new Error(`unknown type: ${perf.play.type}`);
-        }
-        return result;
-    }
-
     function volumeCreditsFor(perf) {
         let result = Math.max(perf.audience - 30, 0);
         if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
