@@ -33,12 +33,13 @@ class TragedyCalculator extends PerformanceCalculator {
     }
 
     get amount() {
-        let tempResult = 40000;
+        let result = 40000;
         if (this.performance.audience > 30) {
-            tempResult += 1000 * (this.performance.audience - 30);
+            result += 1000 * (this.performance.audience - 30);
         }
-        return tempResult;
+        return result;
     }
+
     calculateTragedyCredits() {
         return Math.max(this.performance.audience - 30, 0);
     }
@@ -51,12 +52,16 @@ class ComedyCalculator extends PerformanceCalculator {
     }
 
     get amount() {
-        let tempResult = 30000;
+        let result = 30000;
         if (this.performance.audience > 20) {
-            tempResult += 10000 + 500 * (this.performance.audience - 20);
+            result += 10000 + 500 * (this.performance.audience - 20);
         }
-        tempResult += 300 * this.performance.audience;
-        return tempResult;
+        result += 300 * this.performance.audience;
+        return result;
+    }
+
+    calculateComedyCredits() {
+        return Math.max(this.performance.audience - 30, 0) + Math.floor(this.performance.audience / 5);
     }
 }
 
@@ -97,8 +102,7 @@ function createStatementData(invoice, plays) {
                 result = new TragedyCalculator(perf).calculateTragedyCredits();
                 break;
             case "comedy":
-                result = Math.max(perf.audience - 30, 0);
-                result += Math.floor(perf.audience / 5);
+                result = new ComedyCalculator(perf).calculateComedyCredits();
                 break;
         }
         return result;
