@@ -22,7 +22,7 @@ class TragedyCalculator {
         this.performance = performance;
     }
 
-    calculateTragedyAmount() {
+    get amount() {
         let tempResult = 40000;
         if (this.performance.audience > 30) {
             tempResult += 1000 * (this.performance.audience - 30);
@@ -30,6 +30,21 @@ class TragedyCalculator {
         return tempResult;
     }
 
+}
+
+class ComedyCalculator {
+    constructor(performance) {
+        this.performance = performance;
+    }
+
+    get amount() {
+        let tempResult = 30000;
+        if (this.performance.audience > 20) {
+            tempResult += 10000 + 500 * (this.performance.audience - 20);
+        }
+        tempResult += 300 * this.performance.audience;
+        return tempResult;
+    }
 }
 
 function createStatementData(invoice, plays) {
@@ -53,14 +68,10 @@ function createStatementData(invoice, plays) {
         let result = 0;
         switch (perf.play.type) {
             case "tragedy":
-                result = new TragedyCalculator(perf).calculateTragedyAmount();
+                result = new TragedyCalculator(perf).amount
                 break;
             case "comedy":
-                result = 30000;
-                if (perf.audience > 20) {
-                    result += 10000 + 500 * (perf.audience - 20);
-                }
-                result += 300 * perf.audience;
+                result = new ComedyCalculator(perf).amount
                 break;
             default:
                 throw new Error(`unknown type: ${perf.play.type}`);
