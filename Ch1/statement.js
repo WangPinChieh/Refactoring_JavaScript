@@ -17,9 +17,19 @@ function renderPlainText(statement) {
 
 }
 
-class TragedyCalculator {
+
+class PerformanceCalculator {
     constructor(performance) {
         this.performance = performance;
+    }
+
+    get amount() {
+    }
+}
+
+class TragedyCalculator extends PerformanceCalculator {
+    constructor(performance) {
+        super(performance);
     }
 
     get amount() {
@@ -32,9 +42,9 @@ class TragedyCalculator {
 
 }
 
-class ComedyCalculator {
+class ComedyCalculator extends PerformanceCalculator {
     constructor(performance) {
-        this.performance = performance;
+        super(performance);
     }
 
     get amount() {
@@ -64,6 +74,7 @@ function createStatementData(invoice, plays) {
     function playFor(perf) {
         return plays[perf.playID];
     }
+
     function amountFor(perf) {
         let result = 0;
         switch (perf.play.type) {
