@@ -39,6 +39,9 @@ class TragedyCalculator extends PerformanceCalculator {
         }
         return tempResult;
     }
+    calculateTragedyCredits() {
+        return Math.max(this.performance.audience - 30, 0);
+    }
 
 }
 
@@ -88,8 +91,16 @@ function createStatementData(invoice, plays) {
         return plays[perf.playID];
     }
     function volumeCreditsFor(perf) {
-        let result = Math.max(perf.audience - 30, 0);
-        if ("comedy" === perf.play.type) result += Math.floor(perf.audience / 5);
+        let result = 0;
+        switch (perf.play.type) {
+            case "tragedy":
+                result = new TragedyCalculator(perf).calculateTragedyCredits();
+                break;
+            case "comedy":
+                result = Math.max(perf.audience - 30, 0);
+                result += Math.floor(perf.audience / 5);
+                break;
+        }
         return result;
     }
 
