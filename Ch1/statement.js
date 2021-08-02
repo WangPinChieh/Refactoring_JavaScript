@@ -25,6 +25,10 @@ class PerformanceCalculator {
 
     get amount() {
     }
+
+    get volumeCredits() {
+
+    }
 }
 
 class TragedyCalculator extends PerformanceCalculator {
@@ -40,7 +44,7 @@ class TragedyCalculator extends PerformanceCalculator {
         return result;
     }
 
-    calculateTragedyCredits() {
+    get volumeCredits() {
         return Math.max(this.performance.audience - 30, 0);
     }
 
@@ -60,7 +64,7 @@ class ComedyCalculator extends PerformanceCalculator {
         return result;
     }
 
-    calculateComedyCredits() {
+    get volumeCredits() {
         return Math.max(this.performance.audience - 30, 0) + Math.floor(this.performance.audience / 5);
     }
 }
@@ -85,7 +89,7 @@ function createStatementData(invoice, plays) {
         const result = Object.assign({}, aPerformance);
         result.play = playFor(result);
         result.amount = performanceCalculator.amount;
-        result.volumeCredits = volumeCreditsFor(result);
+        result.volumeCredits = performanceCalculator.volumeCredits;
         return result;
     });
     result.totalAmount = getTotalAmount(result);
@@ -95,19 +99,6 @@ function createStatementData(invoice, plays) {
     function playFor(perf) {
         return plays[perf.playID];
     }
-    function volumeCreditsFor(perf) {
-        let result = 0;
-        switch (perf.play.type) {
-            case "tragedy":
-                result = new TragedyCalculator(perf).calculateTragedyCredits();
-                break;
-            case "comedy":
-                result = new ComedyCalculator(perf).calculateComedyCredits();
-                break;
-        }
-        return result;
-    }
-
     function getTotalAmount(data) {
         let totalAmount = 0;
         for (let perf of data.performances) {
