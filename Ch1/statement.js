@@ -99,21 +99,14 @@ function createStatementData(invoice, plays) {
     function playFor(perf) {
         return plays[perf.playID];
     }
+
     function getTotalAmount(data) {
-        let totalAmount = 0;
-        for (let perf of data.performances) {
-            totalAmount += perf.amount;
-        }
-        return totalAmount;
+        return data.performances.reduce((total, current) => total + current.amount, 0)
     }
 
 
     function getTotalVolumeCredits(data) {
-        let volumeCredits = 0;
-        for (let perf of data.performances) {
-            volumeCredits += perf.volumeCredits;
-        }
-        return volumeCredits;
+        return data.performances.reduce((total, current) => total + current.volumeCredits, 0);
     }
 }
 
